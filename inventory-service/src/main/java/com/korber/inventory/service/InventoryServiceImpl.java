@@ -40,6 +40,7 @@ public class InventoryServiceImpl implements InventoryService {
 
         return batches.stream()
                 .map(b -> BatchDto.builder()
+                        .productId(productId)
                         .batchId(b.getId())
                         .batchNumber(b.getBatchNumber())
                         .expiryDate(b.getExpiryDate())

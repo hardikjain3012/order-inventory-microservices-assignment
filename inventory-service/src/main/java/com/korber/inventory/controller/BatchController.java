@@ -24,6 +24,7 @@ public class BatchController {
     public ResponseEntity<BatchDto> get(@PathVariable Long id) {
         Batch b = batchService.getById(id);
         BatchDto dto = BatchDto.builder()
+                .productId(id)
                 .batchId(b.getId())
                 .batchNumber(b.getBatchNumber())
                 .expiryDate(b.getExpiryDate())
@@ -33,9 +34,10 @@ public class BatchController {
     }
 
     @PostMapping
-    public ResponseEntity<BatchDto> create(@RequestBody Batch batch) {
-        Batch created = batchService.create(batch);
+    public ResponseEntity<BatchDto> create(@RequestBody BatchDto batchDto) {
+        Batch created = batchService.create(batchDto);
         BatchDto dto = BatchDto.builder()
+                .productId(batchDto.getProductId())
                 .batchId(created.getId())
                 .batchNumber(created.getBatchNumber())
                 .expiryDate(created.getExpiryDate())
@@ -45,9 +47,10 @@ public class BatchController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BatchDto> update(@PathVariable Long id, @RequestBody Batch batch) {
-        Batch updated = batchService.update(id, batch);
+    public ResponseEntity<BatchDto> update(@PathVariable Long id, @RequestBody BatchDto batchDto) {
+        Batch updated = batchService.update(id, batchDto);
         BatchDto dto = BatchDto.builder()
+                .productId(batchDto.getProductId())
                 .batchId(updated.getId())
                 .batchNumber(updated.getBatchNumber())
                 .expiryDate(updated.getExpiryDate())
