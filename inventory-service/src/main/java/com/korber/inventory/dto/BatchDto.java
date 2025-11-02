@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 @Builder
 public class BatchDto {
+    private Long productId;
 	private Long batchId;
 	private String batchNumber;
 	private LocalDate expiryDate;

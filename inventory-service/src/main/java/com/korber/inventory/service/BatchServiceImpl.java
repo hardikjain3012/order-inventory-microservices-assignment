@@ -2,6 +2,7 @@ package com.korber.inventory.service;
 
 import java.util.List;
 
+import com.korber.inventory.dto.BatchDto;
 import com.korber.inventory.entity.Batch;
 import com.korber.inventory.entity.Product;
 import com.korber.inventory.exceptions.NotFoundException;
@@ -22,29 +23,34 @@ public class BatchServiceImpl implements BatchService {
 
     @Override
     @Transactional
-    public Batch create(Batch batch) {
+    public Batch create(BatchDto batchDto) {
         // verify product exists
-        if (batch.getProduct() == null || batch.getProduct().getId() == null) {
+        if (batchDto.getProductId() == null) {
             throw new IllegalArgumentException("Batch must reference an existing product id");
         }
-        Product product = productRepository.findById(batch.getProduct().getId())
-                .orElseThrow(() -> new NotFoundException("Product not found: " + batch.getProduct().getId()));
-        batch.setProduct(product);
+        Product product = productRepository.findById(batchDto.getProductId())
+                .orElseThrow(() -> new NotFoundException("Product not found: " + batchDto.getProductId()));
+        Batch batch = Batch.builder()
+                .product(product)
+                .batchNumber(batchDto.getBatchNumber())
+                .expiryDate(batchDto.getExpiryDate())
+                .quantity(batchDto.getQuantity())
+                .build();
         return batchRepository.save(batch);
     }
 
     @Override
     @Transactional
-    public Batch update(Long id, Batch batch) {
+    public Batch update(Long id, BatchDto batchDto) {
         Batch existing = batchRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Batch not found: " + id));
-        existing.setBatchNumber(batch.getBatchNumber());
-        existing.setExpiryDate(batch.getExpiryDate());
-        existing.setQuantity(batch.getQuantity());
+        existing.setBatchNumber(batchDto.getBatchNumber());
+        existing.setExpiryDate(batchDto.getExpiryDate());
+        existing.setQuantity(batchDto.getQuantity());
         // allow changing product by id
-        if (batch.getProduct() != null && batch.getProduct().getId() != null) {
-            Product p = productRepository.findById(batch.getProduct().getId())
-                    .orElseThrow(() -> new NotFoundException("Product not found: " + batch.getProduct().getId()));
+        if (batchDto.getProductId() != null) {
+            Product p = productRepository.findById(batchDto.getProductId())
+                    .orElseThrow(() -> new NotFoundException("Product not found: " + batchDto.getProductId()));
             existing.setProduct(p);
         }
         return batchRepository.save(existing);

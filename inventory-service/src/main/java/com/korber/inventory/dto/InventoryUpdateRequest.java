@@ -9,4 +9,5 @@ public class InventoryUpdateRequest {
 	private Long productId;
 	private Integer quantity;
 	private String action;
+    private String strategy;
 }
