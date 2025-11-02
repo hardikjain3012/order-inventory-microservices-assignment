@@ -19,7 +19,7 @@ import com.korber.inventory.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@Service("FEFOInventoryService")
 public class InventoryServiceImpl implements InventoryService {
 
 	@Autowired
@@ -54,7 +54,6 @@ public class InventoryServiceImpl implements InventoryService {
     public void updateInventory(InventoryUpdateRequest request) {
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new NotFoundException("Product not found: " + request.getProductId()));
-
 
         if (request.getAction() == null || request.getQuantity() == null || request.getQuantity() <= 0) {
             throw new IllegalArgumentException("Invalid inventory update request");
