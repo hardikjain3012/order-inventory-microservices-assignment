@@ -3,6 +3,7 @@ package com.korber.inventory.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.korber.inventory.dto.ProductDto;
 import com.korber.inventory.entity.Product;
 import com.korber.inventory.exceptions.NotFoundException;
 import com.korber.inventory.service.ProductService;
@@ -19,23 +20,48 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping
-    public ResponseEntity<List<Product>> list() {
-        return ResponseEntity.ok(productService.getAll());
+    public ResponseEntity<List<ProductDto>> list() {
+        List<ProductDto> products = productService.getAll().stream()
+                .map(p -> ProductDto.builder()
+                        .productId(p.getId())
+                        .name(p.getName())
+                        .sku(p.getSku())
+                        .build())
+                .toList();
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> get(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.getById(id));
+    public ResponseEntity<ProductDto> get(@PathVariable Long id) {
+        Product product = productService.getById(id);
+        ProductDto dto = ProductDto.builder()
+                .productId(product.getId())
+                .name(product.getName())
+                .sku(product.getSku())
+                .build();
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping
-    public ResponseEntity<Product> create(@RequestBody Product product) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(productService.create(product));
+    public ResponseEntity<ProductDto> create(@RequestBody Product product) {
+        product = productService.create(product);
+        ProductDto dto = ProductDto.builder()
+                .productId(product.getId())
+                .name(product.getName())
+                .sku(product.getSku())
+                .build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product product) {
-        return ResponseEntity.ok(productService.update(id, product));
+    public ResponseEntity<ProductDto> update(@PathVariable Long id, @RequestBody Product product) {
+        product = productService.update(id, product);
+        ProductDto dto = ProductDto.builder()
+                .productId(product.getId())
+                .name(product.getName())
+                .sku(product.getSku())
+                .build();
+        return ResponseEntity.ok(dto);
     }
 
     @DeleteMapping("/{id}")

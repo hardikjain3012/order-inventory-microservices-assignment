@@ -59,9 +59,7 @@ public class InventoryServiceImpl implements InventoryService {
             throw new IllegalArgumentException("Invalid inventory update request");
         }
 
-
         List<Batch> batches = batchRepository.findByProductOrderByExpiryDateAsc(product);
-
 
         switch (request.getAction().toUpperCase()) {
             case "DECREMENT" -> decrementStock(batches, request.getQuantity(), product);
